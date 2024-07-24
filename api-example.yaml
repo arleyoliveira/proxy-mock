@@ -1,0 +1,138 @@
+openapi: 3.0.2
+info:
+    title: Pets
+    version: 1.0.0
+    description: Gestão de Paises
+    termsOfService: 'http://swagger.io/terms/'
+    contact:
+        name: Swagger API Team
+        url: 'http://swagger.io'
+        email: apiteam@swagger.io
+    license:
+        name: Apache 2.0
+        url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+    -
+        url: 'http://petstore.swagger.io/api'
+paths:
+    '/pets/{id}':
+        get:
+            parameters:
+                -
+                    examples:
+                        outros:
+                            value: other
+                        zaza:
+                            value: '123'
+                        ted:
+                            value: '456'
+                    name: id
+                    description: Pet identifier
+                    schema:
+                        type: integer
+                    in: path
+                    required: true
+            responses:
+                '200':
+                    headers:
+                        MOCKED:
+                            schema:
+                                type: boolean
+                            examples:
+                                zaza:
+                                    value: 'true'
+                                ted:
+                                    value: 'false'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Pet'
+                            examples:
+                                zaza:
+                                    value:
+                                        id: 1
+                                        name: Zaza
+                                        tag: Cat
+                                ted:
+                                    value:
+                                        id: 2
+                                        name: Ted
+                                        tag: Dog
+                    description: pet response
+                '404':
+                    headers:
+                        MOCKED:
+                            schema:
+                                type: boolean
+                            examples:
+                                outros:
+                                    value: 'true'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                outros:
+                                    value: |4-
+
+                                            {
+                                                "code": 404,
+                                                "message": "Não encontrado"
+                                            }
+                    description: outros
+                default:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                    description: unexpected error
+            operationId: findPetById
+            description: |-
+                Returns a user based on a single ID, if the user does not have
+                access to the pet
+        parameters:
+            -
+                examples:
+                    outros:
+                        value: other
+                    zaza:
+                        value: '123'
+                    ted:
+                        value: '456'
+                name: id
+                description: Pet identifier
+                schema:
+                    type: integer
+                in: path
+                required: true
+components:
+    schemas:
+        Pet:
+            allOf:
+                -
+                    $ref: '#/components/schemas/NewPet'
+                -
+                    required:
+                        - id
+                    properties:
+                        id:
+                            format: int64
+                            type: integer
+        NewPet:
+            required:
+                - name
+            properties:
+                name:
+                    type: string
+                tag:
+                    type: string
+        Error:
+            required:
+                - code
+                - message
+            properties:
+                code:
+                    format: int32
+                    type: integer
+                message:
+                    type: string
